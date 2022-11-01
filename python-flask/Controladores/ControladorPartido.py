@@ -1,44 +1,25 @@
+from Repositorios.RepositorioPartido import RepositorioPartido
 from Modelos.Partido import Partido
-
-
 class ControladorPartido():
     def __init__(self):
-        print("Creando ControladorPartido")
+        self.repositorioPartido = RepositorioPartido()
 
     def index(self):
-        # El metodo 'index' retorna una lista con todos los partidos registrados; cada uno con su respectiva
-        # informacion(id,nombre y lema)
-        print("Listar todos los partidos")
-        unPartido = {
-            "id": "abc123",
-            "nombre": "Liberal",
-            "lema": "Unidos por la paz"
-        }
-        return [unPartido]
+        return self.repositorioPartido.findAll()
 
-    def create(self, infoPartido):
-        # El metodo 'create' es utilizado para registrar un nuevo partido politico
-        print("Crear un partido")
-        elPartido = Partido(infoPartido)
+    def create(self,infoPartido):
+        nuevoPartido = Partido(infoPartido)
+        return self.repositorioPartido.save(nuevoPartido)
+
+    def show(self,id):
+        elPartido = Partido(self.repositorioPartido.findById(id))
         return elPartido.__dict__
-
-    def show(self, id):
-        # El metodo 'show' retorna la informacion de un partido en especifico(id,nombre y lema)
-        print("Mostrando un partido con id ", id)
-        elPartido = {
-            "id": "abc123",
-            "nombre": "Liberal",
-            "lema": "Unidos por la paz"
-        }
-        return elPartido
 
     def update(self, id, infoPartido):
-        # El metodo 'update' actualiza la informacion de un partido politico en especifico
-        print("Actualizando partido con id ", id)
-        elPartido = Partido(infoPartido)
-        return elPartido.__dict__
+        partidoActual = Partido(self.repositorioPartido.findById(id))
+        partidoActual.nombre = infoPartido["nombre"]
+        partidoActual.lema = infoPartido["lema"]
+        return self.repositorioPartido.save(partidoActual)
 
     def delete(self, id):
-        # El metodo 'delete' eliminia el registro de un partido politico en el sistema
-        print("Elimiando partido con id ", id)
-        return {"deleted_count": 1}
+        return self.repositorioPartido.delete(id)

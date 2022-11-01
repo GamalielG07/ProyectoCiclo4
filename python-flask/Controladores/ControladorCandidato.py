@@ -1,54 +1,40 @@
+from Repositorios.RepositorioCandidato import RepositorioCandidato
+from Repositorios.RepositorioPartido import RepositorioPartido
 from Modelos.Candidato import Candidato
-
-
+from Modelos.Partido import Partido
 class ControladorCandidato():
     def __init__(self):
-        print("Creando ControladorCandidato")
+        self.repositorioCandidato = RepositorioCandidato()
+        self.repositorioPartido = RepositorioPartido()
 
     def index(self):
-        # El metodo 'index' retorna una lista con todos los candidatos registrados en el sistema; cada uno
-        # con su cedula, nombre, apellido y numero de resolucion que lo avala
-        print("Listar todos los candidatos")
-        unCandidato = [
-            {
-                "cedula": "1234567",
-                "numero_resolucion": "1001",
-                "nombre": "Juan",
-                "apellido": "Meza"
-            },
-            {
-                "cedula": "7654321",
-                "numero_resolucion": "1002",
-                "nombre": "Carlos",
-                "apellido": "Castillo"
-            },
-        ]
-        return unCandidato
+        return self.repositorioCandidato.findAll()
 
-    def create(self, infoCandidato):
-        # El metodo 'create' es utilizado para registrar un nuevo candidato en el sistema
-        print("Crear un candidato")
-        elCandidato = Candidato(infoCandidato)
+    def create(self,infoCandidato):
+        nuevoCandidato = Candidato(infoCandidato)
+        return self.repositorioCandidato.save(nuevoCandidato)
+
+    def show(self,id):
+        elCandidato = Candidato(self.repositorioCandidato.findById(id))
         return elCandidato.__dict__
 
-    def show(self, cedula):
-        # El metodo 'show' retorna la informacion(cedula,nombre,apellido y numero de resolucion que lo avala)
-        # de un candidato registrado
-        elCandidato = {
-            "cedula": "1234567",
-            "numero_resolucion": "1001",
-            "nombre": "Juan",
-            "apellido": "Meza"
-        }
-        return elCandidato
+    def update(self, id, infoCandidato):
+        candidatoActual = Candidato(self.repositorioCandidato.findById(id))
+        candidatoActual.cedula = infoCandidato["cedula"]
+        candidatoActual.numero_resolucion = infoCandidato["numero_resolucion"]
+        candidatoActual.nombre = infoCandidato["nombre"]
+        candidatoActual.apellido = infoCandidato["apellido"]
+        return self.repositorioCandidato.save(candidatoActual)
 
-    def update(self, cedula, infoCandidato):
-        # El metodo 'update' actualiza la informacion de un candidato en especifico
-        print("Actualizando candidato con cedula ", cedula)
-        elCandidato = Candidato(infoCandidato)
-        return elCandidato.__dict__
+    def delete(self, id):
+        return self.repositorioCandidato.delete(id)
 
-    def delete(self, cedula):
-        # El metodo 'delete' elimina el registro  de un candidato en el sistema
-        print("Elimiando candidato con cedula ", cedula)
-        return {"deleted_count": 1}
+    """
+    Relación partido y candidato
+    """
+
+    def asignarPartido(self, id, id_partido):
+        candidatoActual = Candidato(self.repositorioCandidato.findById(id))
+        partidoActual = Partido(self.repositorioPartido.findById(id_partido))
+        candidatoActual.partido = partidoActual
+        return self.repositorioCandidato.save(candidatoActual)
