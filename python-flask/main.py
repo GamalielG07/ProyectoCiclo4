@@ -153,6 +153,37 @@ def resultadosTotalesDeCandidatos():
     resultado_ordenado = sorted(lista_candidatos,key=lambda x: x['total_votos'], reverse=True)
     return jsonify(resultado_ordenado)
 
+@app.route("/resultados/totalcandidatosmesa/<string:numero>",methods=['GET'])
+def resultadosTotalesDeCandidatosMesa(numero):
+    lista_candidatos = miControladorCandidato.index()
+    for index, candidato in enumerate(lista_candidatos):
+        lista_candidatos[index]['total_votos'] = 0
+    resultados_mesa=miControladorResultado.totalVotosPorCandidatoMesa(numero)
+    for resultado in resultados_mesa:
+        candidato_id = resultado['candidato']['_id']
+        for index, candidato in enumerate(lista_candidatos):
+            if candidato_id == candidato['_id']:
+                lista_candidatos[index]['total_votos'] = resultado['numero_votos']
+                break
+    resultado_ordenado = sorted(lista_candidatos,key=lambda x: x['total_votos'], reverse=True)
+    return jsonify(resultado_ordenado)
+
+@app.route("/resultados/totalpartidomesa/<string:numero>",methods=['GET'])
+def resultadosTotalesDePartidosMesa(numero):
+    lista_partidos = miControladorPartido.index()
+    for index, partido in enumerate(lista_partidos):
+        lista_partidos[index]['total_votos'] = 0
+    resultados_mesa=miControladorResultado.totalVotosPorCandidatoMesa(numero)
+    for resultado in resultados_mesa:
+        partido_id = resultado['candidato']['partido']['_id']
+        for index, partido in enumerate(lista_partidos):
+            if partido_id == partido['_id']:
+                lista_partidos[index]['total_votos'] = resultado['numero_votos']
+                break
+    resultado_ordenado = sorted(lista_partidos,key=lambda x: x['total_votos'], reverse=True)
+    return jsonify(resultado_ordenado)
+
+
 @app.route("/resultados/totalpartidos",methods=['GET'])
 def resultadosTotalesDePartidos():
     lista_partidos = miControladorPartido.index()

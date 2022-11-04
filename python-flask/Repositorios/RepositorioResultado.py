@@ -34,3 +34,9 @@ class RepositorioResultado(InterfaceRepositorio[Resultado]):
         }
         pipeline = [query]
         return self.queryAggregation(pipeline)
+
+    "Obtener votos totales de candidatos por mesa"
+
+    def votosTotalesPorCandidatoMesa(self,numero):
+        theQuery = {"mesa.$id": ObjectId(numero)}
+        return self.query(theQuery)

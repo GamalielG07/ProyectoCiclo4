@@ -57,3 +57,7 @@ class ControladorResultado():
     "Obtener votos totales por candidato"
     def totalVotosPorCandidato(self):
         return self.repositorioResultado.votosTotalesPorCandidato()
+
+    "Obtener votos totales de candidatos por mesa"
+    def totalVotosPorCandidatoMesa(self,numero):
+        return self.repositorioResultado.votosTotalesPorCandidatoMesa(numero)
